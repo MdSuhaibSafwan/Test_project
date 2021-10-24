@@ -1,0 +1,26 @@
+{% extends "Components/base.html" %}
+
+{% block body %}
+    <div class="container">
+        <h2>Inside Container</h2>
+        {% for user in users %}
+            {% if user.username == "admin" %}
+                {{ user.content_set.all }}
+            {% else %}
+                <h2>{{ user.username }}</h2>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="container">
+        {{ users }}
+    </div>
+
+{% endblock body %}
+
+
+{% block js %}
+    <script>
+        console.log("hello2");  // print("hello")
+    </script>
+{% endblock js %}
