@@ -7,9 +7,9 @@ from django.contrib import messages
 
 
 def index_page(request):
-    qs = User.objects.all()
+    qs = Content.objects.all()
     context = {
-        "users": qs
+        "posts": qs
     }
     return render(request, "main/index.html", context)
 
@@ -51,4 +51,23 @@ def content_update(request, pk):
         "form": form,
     }
     return render(request, "main/content_create.html", context)
+
+
+def content_delete(request):
+
+    context = {
+
+    }
+
+    return render(request, "main/content_delete.html", context)
+
+
+
+def content_detail(request):
+
+    context = {
+        
+    }
+
+    return render(request, "main/content_detail.html", context)
 

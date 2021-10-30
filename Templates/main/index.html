@@ -2,19 +2,20 @@
 
 {% block body %}
     <div class="container">
-        <h2>Inside Container</h2>
-        {% for user in users %}
-            {% if user.username == "admin" %}
-                {{ user.content_set.all }}
-            {% else %}
-                <h2>{{ user.username }}</h2>
-            {% endif %}
+        {% for post in posts %}
+            <article class="media content-section">
+            <!-- <img class="rounded-circle article-img" src=""> -->
+            <div class="media-body">
+                <div class="article-metadata">
+                <a class="mr-2" href="#">{{ post.user }}</a>
+                <!-- <small class="text-muted">post.date_posted|date:"F d, Y"</small> -->
+                <small class="text-muted">{{ post.last_updated }}</small>
+                </div>
+                <h2><a class="article-title" href="">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.text }}</p>
+            </div>
+            </article>
         {% endfor %}
-    </div>
-
-    <div class="container">
-        {{ users }}
-        <h2>Git works</h2>
     </div>
 
 {% endblock body %}
