@@ -20,3 +20,14 @@ class ContentForm(forms.ModelForm):
 
         return text
 
+    def clean_title(self):
+        title = self.cleaned_data.get("title")
+        user = self.cleaned_data.get("user")
+        print("User ", user.username)
+        print("Title ", title)
+
+        qs = Content.objects.filter(user=user, title=title)
+        if qs.exists():
+            raise forms.ValidationError("User has already created a blog of this title")
+
+        return title
