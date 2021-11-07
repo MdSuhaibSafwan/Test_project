@@ -3,10 +3,29 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+    date_created = models.DateTimeField(auto_now_add=True)   # when created, 
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name    
+
+
 class Content(models.Model): 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # user --> content (one to many)
     title = models.CharField(max_length=150)
-    text = models.TextField()    
+    text = models.TextField()
+    tags = models.ManyToManyField("Tag")
+    
+    """
+    Content Tag
+    1        2
+    1        3
+    2        4
+    5        4
+    3        2
+    """    
     date_created = models.DateTimeField(auto_now_add=True)   # when created, 
     last_updated = models.DateTimeField(auto_now=True)
 

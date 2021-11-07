@@ -8,7 +8,8 @@ class ContentForm(forms.ModelForm):
 
     class Meta:
         model = Content
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ["user", ]
 
     def clean_text(self):
         print("Validating text inside forms")
@@ -22,7 +23,8 @@ class ContentForm(forms.ModelForm):
 
     def clean_title(self):
         title = self.cleaned_data.get("title")
-        user = self.cleaned_data.get("user")
+        # user = self.cleaned_data.get("user")  # it is none
+        user = self.instance.user  # Since we made it in view as form.instance.user = request.user
         print("User ", user.username)
         print("Title ", title)
 

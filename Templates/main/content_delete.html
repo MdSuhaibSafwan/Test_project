@@ -12,7 +12,8 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
-               <a class="btn btn-outline-secondary" href="#">Cancel</a>  <!-- Redirecting to detail page  -->
+               <a class="btn btn-outline-secondary" 
+                href="{% url 'content_detail' id=post_obj.id %}">Cancel</a>  <!-- Redirecting to detail page  -->
             </div>
         </form>
     </div>

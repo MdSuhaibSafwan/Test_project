@@ -16,9 +16,12 @@ def index_page(request):
 
 
 def content_creation(request):
+    print(request.user)  # Current User that is logged in
     form = ContentForm()
     if request.method == "POST":
         form = ContentForm(data=request.POST)
+        form.instance.user = request.user  # We are explicitely setting user of the form to current user
+
         if form.is_valid():
             obj = form.save()
             print("Saved")
