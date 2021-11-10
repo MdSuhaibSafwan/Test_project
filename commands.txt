@@ -4,3 +4,9 @@ tag = Tag.objects.create(name="new_tag")
 content.tags.add(tag)
 content.tags.remove(tag)
 tag.content_set.all()
+
+
+from django.contrib.auth.models import User
+user = User(username="admin4", email="a2@a.com")
+user.set_password("12345")
+user.save()

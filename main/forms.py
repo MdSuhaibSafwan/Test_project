@@ -59,11 +59,34 @@ class LoginForm(forms.Form):
         return password
 
 
+class UserRegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(label="Password")
+    password2 = forms.CharField(label="Confirm Password")
 
-# class UserRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email", "first_name", "password1", "password2"]
 
-#     class Meta:
-#         model = User
-#         fields = "__all__"
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        qs = User.objects.filter(username=username)
+        if qs.exists():
+            raise forms.ValidationError("Username Already exists")
+        return username
 
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        qs = User.objects.filter(email=email)
+        if qs.exists():
+            raise forms.ValidationError("Email Already exists")
+        return email
 
+    
+    def clean_password2(self):
+        p1 = self.cleaned_data.get("password1")
+        p2 = self.cleaned_data.get("password2")
+
+        if p1 != p2:
+            raise forms.ValidationError("Both Password didn't match")
+
+        return p2

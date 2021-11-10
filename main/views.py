@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Content, UserProfile
 from django.http import HttpResponse
-from .forms import ContentForm, LoginForm
+from .forms import ContentForm, LoginForm, UserRegistrationForm
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.decorators import login_required
@@ -136,4 +136,30 @@ def logout_user(request):
     logout(request)
     print("Logged out")
     return redirect(settings.LOGIN_URL)
+
+
+def register_user(request):
+    if request.user.is_authenticated:
+        pass  # redirect
+
+    form = UserRegistrationForm()
+    if request.method == "POST":
+        form = UserRegistrationForm(data=request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get("password2")
+            # form.instance.password = password
+            user_obj = form.save()  # returns an instance of the model
+            user_obj.set_password(password)  # gives a hash password
+            user_obj.save()
+            print("User is Saved")
+
+            login(request, user_obj)  # logs in the user
+
+            # redirection
+
+    context = {
+        "form": form
+    }
+
+    return render(request, "user/register.html", context)
 
