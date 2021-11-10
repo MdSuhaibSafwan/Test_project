@@ -106,9 +106,9 @@ def content_detail(request, id):
 
 
 def login_user(request):
-    user = request.user  # Current user that is active in this session
+    user = request.user  
     if user.is_authenticated:
-        raise PermissionDenied("User is Authenticated")
+        raise PermissionDenied("User is Authenticated")  # Current user that is active in this session
     form = LoginForm()
     if request.method == "POST":
         form = LoginForm(data=request.POST)
