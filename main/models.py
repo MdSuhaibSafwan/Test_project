@@ -26,7 +26,7 @@ class Content(models.Model):
     5        4
     3        2
     """    
-    date_created = models.DateTimeField(auto_now_add=True)   # when created, 
+    date_created = models.DateTimeField(auto_now_add=True)  # when created, 
     last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -62,11 +62,22 @@ class Content(models.Model):
         return super().save(*args, **kwargs)
 
 
+class ContentImage(models.Model):
+    content = models.ForeignKey(Content, on_delete=models.SET_NULL, null=True)
+
+    image = models.ImageField(upload_to="content_images")
+
+    date_created = models.DateTimeField(auto_now_add=True)  # when created, 
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.content)
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # models.OneToOneRel
-    phone = models.CharField(max_length=15)    
+    phone = models.CharField(max_length=15, unique=True)
     address_1 = models.TextField()
     address_2 = models.TextField()
 

@@ -1,8 +1,9 @@
+from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Content, UserProfile
 from django.http import HttpResponse
-from .forms import ContentForm, LoginForm, UserRegistrationForm
+from .forms import ContentForm, LoginForm, UserRegistrationForm, LoginWithPhoneForm
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.decorators import login_required
@@ -162,4 +163,30 @@ def register_user(request):
     }
 
     return render(request, "user/register.html", context)
+
+
+
+# allauth 
+
+def login_with_phone(request):
+    form = LoginWithPhoneForm
+    if request.method == "POST":
+        form = LoginWithPhoneForm(data=request.POST)
+        if form.is_valid():
+            phone = form.cleaned_data.get("phone")
+            password = form.cleaned_data.get("password")
+            qs = User.objects.filter(userprofile__phone=phone)
+            if not qs.exists():
+                raise Http404("Phone Does not Exist")
+
+            obj = qs.get()
+            user = authenticate(username=obj.username, password=password)
+            if user:
+                login(request, user)
+
+    context = {
+        "form": form
+    }
+
+    return render(request, "user/login_with_phone.html", context)
 

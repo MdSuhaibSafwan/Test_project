@@ -59,6 +59,13 @@ class LoginForm(forms.Form):
         return password
 
 
+class LoginWithPhoneForm(forms.Form):
+    phone = forms.CharField(max_length=150)
+    password = forms.CharField()
+
+
+
+
 class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(label="Password")
     password2 = forms.CharField(label="Confirm Password")

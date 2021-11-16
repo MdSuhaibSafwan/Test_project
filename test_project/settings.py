@@ -99,15 +99,15 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 CRISPY_TEMPLATE_PACK = "bootstrap4"  # bootstrap 2
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfile_dir")  # static files root  python manage.py collectstatic
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+MEDIA_URL = "/images/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
