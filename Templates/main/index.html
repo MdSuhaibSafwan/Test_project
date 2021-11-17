@@ -19,6 +19,14 @@
                 </div>
             </article>
         {% endfor %}
+        <ul class="pagination">
+        {% for page in pages %}           
+            <li>
+                <a href="?page={{ page }}">{{ page }}</a>
+            </li>
+            {% endfor %}
+
+        </ul>
     </div>
 
 {% endblock body %}

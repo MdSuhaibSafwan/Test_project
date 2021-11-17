@@ -6,7 +6,26 @@ content.tags.remove(tag)
 tag.content_set.all()
 
 
+# user commands
+
 from django.contrib.auth.models import User
 user = User(username="admin4", email="a2@a.com")
 user.set_password("12345")
 user.save()
+
+
+# paginating commands
+
+>>> from django.core.paginator import Paginator
+>>> from main.models import Content
+>>> qs = Content.objects.all().order_by("-date_created")
+
+>>> qs.count()
+30
+>>> paginator = Paginator(qs, 10)
+>>> page = 1
+>>> paginator.page(page)
+<Page 1 of 3>
+>>> contents = paginator.page(page)
+>>> for i in contents:
+    print(i)

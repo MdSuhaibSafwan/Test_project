@@ -1,3 +1,4 @@
+from django.core import paginator
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -13,11 +14,25 @@ from django.conf import settings
 # Login materials
 from django.contrib.auth import login, authenticate, logout
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index_page(request):
     qs = Content.objects.all().order_by("-last_updated")
+    paginator = Paginator(qs, 5)
+
+    pages_range = range(1, paginator.num_pages+1)
+    print(pages_range)
+    page = request.GET.get("page", 1)
+    try:
+        posts = paginator.page(page)  # returns the contents in page 
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+
     diction = {
-        "posts": qs
+        "posts": posts,
+        "pages": pages_range,
     }
     return render(request, "main/index.html", context=diction)
 
@@ -183,6 +198,8 @@ def login_with_phone(request):
             user = authenticate(username=obj.username, password=password)
             if user:
                 login(request, user)
+
+            #redirection
 
     context = {
         "form": form
