@@ -1,4 +1,5 @@
 {% extends "Components\base.html" %}
+{% load main_tags %}
 
 {% block body %}
 
@@ -6,7 +7,7 @@
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
-            <a class="mr-2" href="#">Author name: {{ post_obj.user }}</a>
+            <a class="mr-2" href="#">Author name: {{ post_obj.user }} -- {{ post_obj.user | count_user_posts }}</a>
             <small class="text-muted">Date: {{ post_obj.last_updated }}</small>
             <a href="{% url 'content_update' pk=post_obj.id %}" class="btn btn-outline-secondary">Update</a>
             <a href="{% url 'content_delete' number=post_obj.id %}" class="btn btn-outline-danger">Delete</a>

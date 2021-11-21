@@ -3,13 +3,21 @@ from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Content, UserProfile
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .forms import ContentForm, LoginForm, UserRegistrationForm, LoginWithPhoneForm
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib.auth.decorators import login_required
 
 from django.conf import settings
+
+
+# CBV, Generic Views
+from django.views.generic import ListView, DetailView, UpdateView, CreateView
+
+# Mixin 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # Login materials
 from django.contrib.auth import login, authenticate, logout
@@ -37,52 +45,99 @@ def index_page(request):
     return render(request, "main/index.html", context=diction)
 
 
-@login_required
-def content_creation(request):
-    print(request.user)  # Current User that is logged in
-    form = ContentForm()
-    if request.method == "POST":
-        form = ContentForm(data=request.POST)
-        form.instance.user = request.user  # We are explicitely setting user of the form to current user
 
-        if form.is_valid():
-            obj = form.save()
-            print("Saved")
-            return redirect("content_detail", id=obj.id)
-
-        messages.error(request, "Invalid data provided")
-        print("Invalid data")
-
-    context = {
-        "form": form,
-    }
-
-    return render(request, "main/content_create.html", context)
+class IndexPageView(ListView):
+    template_name = "main/index.html"
+    context_object_name = "posts"
+    
+    def get_queryset(self):
+        qs = Content.objects.all()
+        return qs
 
 
-@login_required
-def content_update(request, pk):
-    obj = Content.objects.get(pk=pk)
 
-   # Give a permission denied when other user try to update content
+# @login_required
+# def content_creation(request):
+#     print(request.user)  # Current User that is logged in
+#     form = ContentForm()
+#     if request.method == "POST":
+#         form = ContentForm(data=request.POST)
+#         form.instance.user = request.user  # We are explicitely setting user of the form to current user
 
-    form = ContentForm(instance=obj)
+#         if form.is_valid():
+#             # self.form_valid(form)
+#             obj = form.save()
+#             print("Saved")
+#             return redirect("content_detail", id=obj.id)
 
-    if request.method == "POST":
-        form = ContentForm(data=request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            print("Saved")
-            return HttpResponse("<h1>Congrats</h1>")  # task to redirect to detail
+#         messages.error(request, "Invalid data provided")
+#         print("Invalid data")
 
-        messages.error(request, "Invalid data provided")
-        print("Invalid data")
+#     context = {
+#         "form": form,
+#     }
 
-    context = {
-        "form": form,
-    }
-    return render(request, "main/content_create.html", context)
+#     return render(request, "main/content_create.html", context)
 
+
+
+class ContentCreationView(LoginRequiredMixin, CreateView):
+    template_name = "main/content_create.html"
+    context_object_name = "form"
+    form_class = ContentForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        return HttpResponseRedirect(self.success_url)
+
+
+# @login_required
+# def content_update(request, pk):
+#     obj = Content.objects.get(pk=pk)
+
+#    # Give a permission denied when other user try to update content
+
+#     form = ContentForm(instance=obj)
+
+#     if request.method == "POST":
+#         form = ContentForm(data=request.POST, instance=obj)
+#         if form.is_valid():
+#             form.save()
+#             print("Saved")
+#             return HttpResponse("<h1>Congrats</h1>")  # task to redirect to detail
+
+#         messages.error(request, "Invalid data provided")
+#         print("Invalid data")
+
+#     context = {
+#         "form": form,
+#     }
+#     return render(request, "main/content_create.html", context)
+
+
+class ContentUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = "main/content_create.html"
+    context_object_name = "form"
+    form_class = ContentForm
+    success_url = "/"
+    lookup_url_pk = "pk"
+
+    def get_object(self):
+        # self.kwargs  # Dictionary
+        content_id = self.kwargs.get(self.lookup_url_pk)
+        try:
+            obj = Content.objects.get(id=content_id)
+        except ObjectDoesNotExist:
+            return HttpResponse(f"Content with this Id ({id}) is not found")
+
+        return obj
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        return HttpResponseRedirect(self.success_url)
 
 @login_required
 def content_delete(request, number):
@@ -113,12 +168,43 @@ def content_detail(request, id):
     except ObjectDoesNotExist:
         return HttpResponse(f"Content with this Id ({id}) is not found")
 
+    addition = 10 + 15
+
     context = {
-        "post_obj": obj
+        "post_obj": obj,
+        "sum": addition,
     }
 
     return render(request, "main/content_detail.html", context)
 
+
+def addition():
+    return 10 + 10
+
+
+class ContentDetailView(LoginRequiredMixin, DetailView):
+    lookup_url_field = "id"
+    template_name = "main/content_detail.html"
+    context_object_name = "post_obj"
+
+    # Detail View.as_view() --> self.get_object()  --> {"post_obj": obj}  --> render(self.template_name)
+
+    def get_object(self):
+        # self.kwargs  # Dictionary
+        content_id = self.kwargs.get(self.lookup_url_field)
+        try:
+            obj = Content.objects.get(id=content_id)
+        except ObjectDoesNotExist:
+            return HttpResponse(f"Content with this Id ({id}) is not found")
+
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context --> Dictionary
+        context["sum"] = addition()
+        print(context)
+        return context
 
 
 def login_user(request):

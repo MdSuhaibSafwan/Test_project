@@ -27,7 +27,7 @@ class ContentForm(forms.ModelForm):
         title = self.cleaned_data.get("title")
         # user = self.cleaned_data.get("user")  # it is none
         user = self.instance.user  # Since we made it in view as form.instance.user = request.user
-        print("User ", user.username)
+        print("User ", user)
         print("Title ", title)
 
         qs = Content.objects.filter(user=user, title=title)
