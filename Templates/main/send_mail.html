@@ -1,0 +1,10 @@
+{% extends "Components/base.html" %}
+
+{% block body %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <button type="submit">Send Mail</button>
+</form>
+
+{% endblock body %}

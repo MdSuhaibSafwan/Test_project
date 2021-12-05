@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 
 from django.conf import settings
 
+from django.core.mail import send_mail
+
 
 # CBV, Generic Views
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
@@ -79,8 +81,6 @@ class IndexPageView(ListView):
 
 #     return render(request, "main/content_create.html", context)
 
-
-
 class ContentCreationView(LoginRequiredMixin, CreateView):
     template_name = "main/content_create.html"
     context_object_name = "form"
@@ -135,7 +135,7 @@ class ContentUpdateView(LoginRequiredMixin, UpdateView):
         return obj
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        # form.instance.user = self.request.user
         form.save()
         return HttpResponseRedirect(self.success_url)
 
@@ -200,7 +200,7 @@ class ContentDetailView(LoginRequiredMixin, DetailView):
         return obj
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)  # context --> {}
         # context --> Dictionary
         context["sum"] = addition()
         print(context)
@@ -293,3 +293,18 @@ def login_with_phone(request):
 
     return render(request, "user/login_with_phone.html", context)
 
+
+
+def send_mail_to_someone(request):
+    if request.method == "POST":
+        send_mail(
+            subject="Testing mail system",
+            message="Messaging To Imam and Shovon",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=["hossain258@gmail.com", "Shovon.1585@gmail.com"],
+        )
+
+    return render(request, "main/send_mail.html")
+
+
+# user register --> user_verification --> user account verify

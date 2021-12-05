@@ -1,9 +1,13 @@
 import os
 from pathlib import Path
+import environ
+
+env = environ.Env()
+env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-r2zb^1kxduhzcz#_gn1r4g0umh@yfl7l-wwclxu%t9@0ynxn73'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = True
 
@@ -85,6 +89,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOGIN_URL = "/user/login/"  
 LOGIN_REDIRECT_URL = "/"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
