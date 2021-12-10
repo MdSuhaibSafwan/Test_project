@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+import environ
+
+env = environ.Env()
+env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -109,5 +113,16 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = "/images/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST = 'cloud847.thundercloud.uk'
+
+
+EMAIL_HOST_USER = ('info@shopurbrand.com') 
+EMAIL_HOST_PASSWORD = ('Cloud@12345')
+EMAIL_USE_TLS = False
+# EMAIL_USE_SSL
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -2,7 +2,7 @@ from django.core import paginator
 from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Content, UserProfile
+from .models import Content, UserProfile, UserVerificationOTp
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import ContentForm, LoginForm, UserRegistrationForm, LoginWithPhoneForm
 from django.contrib import messages
@@ -255,7 +255,7 @@ def register_user(request):
             user_obj.save()
             print("User is Saved")
 
-            login(request, user_obj)  # logs in the user
+            #login(request, user_obj)  # logs in the user
 
             # redirection
 
@@ -293,3 +293,16 @@ def login_with_phone(request):
 
     return render(request, "user/login_with_phone.html", context)
 
+
+def verify_token(request, token):
+    try:
+        obj = UserVerificationOTp.objects.get(token=token)
+    except ObjectDoesNotExist:
+        return HttpResponse("Token not Found")
+
+    user = obj.user
+    profile = user.userprofile
+    profile.verified = True
+    profile.save()
+
+    return HttpResponse("USer Verified Successfully")

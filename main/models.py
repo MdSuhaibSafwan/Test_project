@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
-
+import secrets
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
@@ -80,6 +80,22 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=15, unique=True)
     address_1 = models.TextField()
     address_2 = models.TextField()
+    verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
+
+
+class UserVerificationOTp(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=256)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        token = self.token
+        if token is None or token == "":
+            self.token = secrets.token_hex()
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ["user", "token"]
