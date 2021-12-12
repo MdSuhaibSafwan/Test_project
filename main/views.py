@@ -308,3 +308,9 @@ def send_mail_to_someone(request):
 
 
 # user register --> user_verification --> user account verify
+
+
+@login_required
+def password_change_done(request):
+    print("Inside Views")
+    return redirect("/")

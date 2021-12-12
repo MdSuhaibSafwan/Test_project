@@ -168,3 +168,36 @@ user list
 
 
 
+'django.contrib.auth.urls'
+accounts/logout/ [name='logout']
+accounts/password_change/ [name='password_change']
+accounts/password_change/done/ [name='password_change_done']
+
+accounts/password_reset/ [name='password_reset']
+accounts/password_reset/done/ [name='password_reset_done']
+accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
+accounts/reset/done/ [name='password_reset_complete']
+
+
+You're receiving this email because you requested a password reset for your user account at 127.0.0.1:8000.
+
+Please go to the following page and choose a new password:
+
+http://127.0.0.1:8000/accounts/password-reset/MTM/axjdc3-e3ca08eb7192d08c6d39be8686dd6f31/
+
+
+class Model:
+  user --> ForeignKey(User)
+  token --> token
+  expired --> boolean
+  date --> date
+
+  def validate_date(self):
+    time = timezone.now()
+    date = self.date
+    time - date --> 5 > x
+
+
+views.py
+  token --> expired = True
+
