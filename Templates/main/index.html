@@ -1,4 +1,5 @@
 {% extends "Components/base.html" %}
+{% load static  %}
 
 {% block body %}
     <div class="container">
@@ -36,4 +37,7 @@
     <script>
         console.log("hello2");  // print("hello")
     </script>
+
+    <script src="{% static 'js/json.js' %}"></script>
+    <script src="{% static 'js/ask_response.js' %}"></script>
 {% endblock js %}

@@ -3,7 +3,7 @@ from django.http.response import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Content, UserProfile
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse  # JS Object Notation
 from .forms import ContentForm, LoginForm, UserRegistrationForm, LoginWithPhoneForm
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -314,3 +314,33 @@ def send_mail_to_someone(request):
 def password_change_done(request):
     print("Inside Views")
     return redirect("/")
+
+
+def give_js_response(request):
+    dictionary = {
+        "function_name": "give_js_response",
+        "status": "ok"
+    }
+
+    # [{}, {}, {}, {}]
+
+    return JsonResponse([dictionary], safe=False)
+
+import json
+
+
+@login_required
+def create_content_through_js(request):
+
+    data = request.body
+    data = json.loads(data)  # parse --> dict
+    print(type(data))
+
+    title = data.get("title")
+    text = data.get("text")
+
+    obj = Content.objects.create(title=title, text=text, user=request.user)
+    print("Created content", obj)
+
+    return JsonResponse("creating content", safe=False)
+

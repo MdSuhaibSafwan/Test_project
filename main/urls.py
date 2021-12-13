@@ -25,6 +25,9 @@ urlpatterns = [
     path("accounts/user/reset/done/", PasswordResetDoneView.as_view(), name="password_reset_done"),
 
     path("accounts/password-reset/<uidb64>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path("accounts/password-reset/done/", PasswordResetCompleteView.as_view(), name="password_reset_complete")
+    path("accounts/password-reset/done/", PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+
+    path("js/response/", views.give_js_response, name="js-response"),
+    path("js/post/", views.create_content_through_js),
 
 ]
